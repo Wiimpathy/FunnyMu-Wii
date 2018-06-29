@@ -1,0 +1,96 @@
+
+  FUNVISION TECHNICAL INFO
+  ========================
+
+CHIPS
+=====
+
+ 2MHZ 6502A cpu
+ 2 x 2114 (1K RAM)
+ 9929 Video chip with 16kb vram
+ 76489 sound chip
+ 6821 PIA
+
+MEMORY MAP
+==========
+
+ 0000 - 0FFF     1K RAM repeated 4 times
+ 1000 - 1FFF     PIA (only 4 addresses)
+ 2000 - 2FFF     Read VDP chip (only occupies 2 addresses)
+ 3000 - 3FFF     Write VDP chip (only occupies 2 addresses)
+
+ 4000 - 7FFF     2nd cartridge ROM area
+
+ 8000 - BFFF     1st cartridge ROM area 
+
+ C000 - FFFF     2K boot ROM repeated 8 times.
+
+Video
+=====
+
+Most code writes to $3000 and $3001 and reads from $2000 and $2001. Go read 
+a manual for the 9929/9918 for how it all works.
+
+Sound
+=====
+
+The 76489 is wired into port B of the PIA. You just write single bytes to it.
+Its a relatively slow access device so this is undoubtedly why they wired it to
+the PIA rather than straight to the data bus. I think they configure the PIA to
+automatically send a strobe signal when you write to $1002.
+
+Keyboard
+========
+
+The keyboard is the weirdest thing imaginable. Visually it consists of the two
+hand controllers slotted into the top of the console. The left joystick and
+24 keys on one side and the right joystick and another 24 keys on the other.
+The basic layout of the keys is:
+
+ Left controller
+ ---------------
+
+    1     2     3     4     5     6
+   ctrl   Q     W     E     R     T
+    <-    A     S     D     F     G
+   shft   Z     X     C     V     B
+
+ Right controller
+ ----------------
+
+    7     8     9     0     :     -
+    Y     U     I     O     P    Enter
+    H     J     K     L     ;     ->
+    N     M     ,     .     /    space
+
+The left controller is wired to the PIA pins pa0, pa1 and pb0-7
+The right controller is wired to the PIA pins pa2, pa3 and pb0-7
+
+The basic key scanning routine sets pa0-3 high then sends pa0 low, then pa1
+low and so forth and each time it reads back a value into pb0-7. You might ask
+the question 'How do they read 48 keys and two 8(16?) position joysticks using
+a 4 x 8 key matrix?'. Somehow when you press a key and the appropriate 
+strobe is low, two of the 8 input lines are sent low instead of 1. I have
+no idea how they do this. This allows them to read virtually all 24 keys on
+one controller by just sending one strobe low. The strobes go something like:
+
+    PA? low          keys
+    -------          ----
+     PA3             right hand keys
+     PA2             right joystick
+     PA1             left hand keys
+     PA0             left joystick
+
+An example of a key press is the 'Y' key. Its on the right controller so is
+scanned when PA3 is low. It will return 11111010 ($FA).
+
+There are some keys that don't follow the setup above. These are the '1', Left
+arrow, space and right arrow. They are all scanned as part of the corresponding
+joystick strobe. eg. '1' is detected by sending PA0 low and reading back a 
+11110011 ($F3). Also some keys are effectively the same as the fire buttons
+on the controllers. Left shift and control act like the fire buttons on the 
+left controller and right arrow and '-' act the same as the fire buttons on the
+right controller.
+
+
+

@@ -1,0 +1,49 @@
+Funvision FAQ
+=============
+
+Q. How do I resize the window?
+
+A. You don't
+
+
+Q. The game starts in demo mode but I can't do anything
+
+A. Most games seem to go into demo mode immediately after they start. To 
+   start a game you usally press the emulators RESET button (which is mapped
+   to the ESC key). Then you typically select a level using the fire buttons.
+   Which are currently the shift keys, left control and the tab key. Then to
+   start the game you usually press a key (I find M or Z are good candidates).
+
+
+Q. The sound in the Windows version is awful
+
+A. Sound works fine under Linux. Its something to do with how SDL does
+   sound under Windows.
+
+
+Q. Sonic Invaders makes a high pitched noise all the way through.
+
+A. Yeah it does that doesn't it.
+
+
+Q. Where do I find ROMs?
+
+A. I have no idea. I have even less idea if you ask me personally.
+
+
+Q. These games are crap. Your emulator stinks.
+
+A. Thats nice dear.
+
+
+Q. I can't compile it. It always gives me errors.
+
+A. Do you have gcc installed? Do you have SDL installed? 
+
+
+Q. It runs too slow on my 386.
+
+A. Yes it does. I've been running it on my P133 at OK speeds. I am guessing 
+   that a P200 would probably run everything at full Funvision speed. 
+
+

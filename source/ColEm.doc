@@ -1,0 +1,281 @@
+                          ******* ColEm *******
+                    The Portable ColecoVision Emulator
+                         version 1.0 (05/30/1998)
+                            by Marat Fayzullin
+
+                     WWW: http://www.komkon.org/fms/
+
+
+
+                           * IN THIS DOCUMENT *
+
+                      NEW IN THIS VERSION
+                      INTRODUCTION
+                      BUTTONS
+                      COMMAND LINE OPTIONS
+                      SOUNDTRACK FILE FORMAT
+                      FREQUENTLY ASKED QUESTIONS
+
+
+
+                       * NEW IN THIS VERSION *
+
+* Standardized Z80 emulation.
+* Standardized PSG emulation.
+* Soundtrack saved into .SND files.
+* Screen refresh done line-by-line.
+* Sprites are refreshed line-by-line.
+* Limit on sprites per line introduced.
+* General cleanup of the source code.
+* Rewritten documentation.
+
+
+
+                           * INTRODUCTION *
+
+  ColEm is a portable emulator of the old ColecoVision videogame console
+written in C. You can always get the latest ColEm source code, binaries,
+and support files from
+
+                   http://www.komkon.org/fms/ColEm/
+
+  There are versions of ColEm for Amiga, Macintosh, IBM PC (both MSDOS and
+Windows), and other systems. Most are available from the WWW site
+mentioned above.
+
+  The ColEm source code distribution includes C sources for a portable Coleco
+emulator and screen/keyboard drivers for Unix/X and MSDOS.
+
+  If you would like to port ColEm to another system or make changes in
+ColEm's code, *please*, contact me by email or some other means. Be aware
+that ColEm source code is freely distributable, but it is *not* public
+domain. You can not use it in commercial purposes, distribute, or change
+it on your own, unless you contact me to arrange the conditions of such
+usage and get my permission. Feel free to look at existing drivers as well
+as at other code.
+
+  Finally, I would like to thank:
+
+  Hans Guijt [.NL]         Neal Danner [.US]
+  Marcel de Kogel [.NL]    Alan Steremberg [.US]
+  John Stiles [.US]
+
+...and to all people who helped me with advices, information, ROM images,
+and encouragment. 
+
+
+
+                             * BUTTONS *
+
+  [SPACE]    - FIRE-A button (also: [LALT],A,S,D,F,G,H,J,K,L)
+  [LCONTROL] - FIRE-B button (also: Z,X,C,V,B,N,M)
+  [[]        - SuperAction FIRE-C button (also: Q,E,T,U,O)
+  []]        - SuperAction FIRE-D button (also: W,R,Y,I,P)
+  [0]-[9]    - Digit buttons
+  [-]        - [#] button
+  [=]        - [.] button
+  [ESC]      - Quit emulation (also: [F12])
+  [F2]       - Turn soundtrack log on/off
+  [SHIFT] and [CAPSLOCK] switch between joypads
+
+  When compiled with #define SOUND:
+  [F6]-[F9]  - Toggle sound channels on/off
+  [F10]      - Toggle all sound on/off
+  [PGUP]     - Increase sound volume
+  [PGDOWN]   - Decrease sound volume
+
+  When compiled with #define DEBUG:
+  [F1]       - Go into the built-in debugger
+
+
+
+                        * COMMAND LINE OPTIONS *
+
+  -verbose <level>    - Select debugging messages [5]
+                        0 - Silent       1 - Startup messages
+                        2 - VDP          4 - Illegal Z80 ops
+                                        16 - Sound
+  -hperiod <period>   - Number of CPU cycles per HBlank [215]
+  -vperiod <period>   - Number of CPU cycles per VBlank [60000]
+  -uperiod <period>   - Number of VBlanks per screen update [2]
+  -help               - Print this help page
+  -autoa/-noautoa     - Autofire/No autofire for button A [-noautoa]
+  -autob/-noautob     - Autofire/No autofire for button B [-noautob]
+  -logsnd <filename>  - Write soundtrack to a file [LOG.SND]
+  -shm/-noshm         - Use/don't use MIT SHM extensions for X [-shm]
+  -saver/-nosaver     - Save/don't save CPU when inactive [-saver]
+
+  When compiled with #define SOUND:
+  -sound [<quality>]  - Sound emulation quality [0]
+                        0 - Off                1 - Adlib (MSDOS)
+                        Values >8191 are treated as wave synthesis
+                        frequencies. Default frequency is 22kHz.
+  -nosound            - Don't emulate sound [-nosound]
+
+  When compiled with #define DEBUG:
+  -trap <address>     - Trap execution when PC reaches address [FFFFh]
+
+
+
+                       * SOUNDTRACK FILE FORMAT *
+                        
+  ColEm is capable of saving soundtrack into so-called .SND files, also
+used by my other emulators. You can find tools to work with these files in
+the EMUTools package. .SND files have quite simple format described below:
+
+Byte     Contents
+-----------------------------------------------------------------------------
+0-3      String "SND^Z"
+4        Version number
+5        Number of channels
+6        Clock frequency, in Hz
+7-15     Reserved, must be zeroes!
+16-EOF   Sound records of following types:
+
+         a) channel# | frequency.l | frequency.h | volume
+            Change sound on a given channel to new frequency (Hz)
+            and volume (0..255).
+                       
+         b) FFh         
+            A single clock "tick".
+
+         c) FDh | number of ticks
+            Multiple clock "ticks" (0..255).
+
+         d) FEh | channel# | sound type
+            Change sound type at a given channel. Default type
+            is MELODIC for all channels. Currently defined types:
+
+            0 - MELODIC
+            1 - WHITE NOISE
+            2 - PERIODIC NOISE
+-----------------------------------------------------------------------------
+         
+  
+
+                     * FREQUENTLY ASKED QUESTIONS *
+
+* I WANNA PLAY GAMES!!!! WHERE DO I GET GAMES???????
+-----------------------------------------------------------------------------
+  I do not know. I can't give you any due to both legal and moral reasons.
+Please, do not mail me asking for games. I will delete your mail right
+away, and you won't get an answer.
+         
+* How do I copy games from cartridges to a computer?
+-----------------------------------------------------------------------------
+  You can use a special device called cartridge copier. Pascal Felber has
+made such a copier. Its schematics and software are available at
+
+                http://lsewww.epfl.ch/~felber/IO-56/
+  
+  You can also buy this copier from Pascal, either in parts, or as a  
+pre-built kit.
+         
+* Why is ColEm so slow on my PC?
+-----------------------------------------------------------------------------
+  Because your machine is too slow to run it. My experience shows that you
+need at least a 486DX/33 machine with fast video to run emulation at a
+reasonable speed. Following are the ways to speeds thing up: 
+     
+  a) Increase UPeriod. The picture gets more jerky this way, but the
+     program become faster.
+
+  b) Decrease VPeriod. While it may prevent some games from working,
+     others will run faster.
+
+  c) On Unix, always use MIT Shared Memory Extension for X (MITSHM). This,
+     of course, means that you have to run program locally.
+
+* ColEm is too fast on my machine! How do I slow it down?
+-----------------------------------------------------------------------------
+  Decrease UPeriod to 2 or even to 1. The emulation will become much   
+slower, but smoother. You can also increase VPeriod to make games run
+slower.
+
+* ColEm starts, but then it exits immediately.
+-----------------------------------------------------------------------------
+  This may happen because of following problems:
+
+  a) Check if you have the COLECO.ROM file in the current directory. This
+     ROM contains ColecoVision startup code and BIOS. It must be 8192
+     bytes long. ColEm won't run without it.
+
+  b) Check your cartridge ROM image size: it must be a multiple of 8192.
+     Otherwise, your ROM is most likely corrupted.
+
+  c) Look at the cartridge ROM image in the editor: the first two bytes
+     must be AAh 55h or 55h AAh.
+
+* My favorite game doesn't work on ColEm. What do I do?
+-----------------------------------------------------------------------------
+  There may be several reasons why a game has problems running on ColEm
+or does not run at all:
+
+  a) If the game hangs, it may be because the VPeriod is too small.
+     Increase the VPeriod and see what happens.
+
+  b) The game may require some exotic piece of equipment, such as a
+     light gun. Not all ColecoVision addons are supported by ColEm.
+
+  c) ColEm may not currently run this game. Not all games are supported at
+     this moment. Don't expect 100% compatibility with real hardware.
+
+* Is it legal to spread cartridge ROMs?
+-----------------------------------------------------------------------------
+  NO. Few people seem to care though, mainly because there is no profit to
+be made on these ROMs any longer. Nevertheless, be aware of the fact that
+by using commercial software you haven't bought, you are commencing an act
+of piracy. Many ColecoVision games belong to a company called Telegames
+now, which doesn't take spreading their ROM images lightly.
+
+* What should I do to convert .SND files saved by ColEm into music?
+-----------------------------------------------------------------------------
+  An .SND file is a soundtrack saved by ColEm. You can play it using
+PSGPLAY program included into EMUTools package. You can also convert .SND
+files into MIDI format (.MID) using the SND2MID utility. SND2MID is also
+included into EMUTools.
+
+* What is that EMUTools package and where do I get it?
+-----------------------------------------------------------------------------
+  EMUTools is a set of utilities which may be useful for both emulator
+authors and users. They allow to list and verify diferent ROM images,
+convert music files, disassemble and compare ROMs. EMUTools can be
+obtained from ColEm WWW site.
+
+* Do I need to unpack GZIPped ROM images to run them on ColEm?
+-----------------------------------------------------------------------------
+  No, unless your copy of ColEm has been compiled without #define ZLIB. 
+It allows ColEm to recognize and automatically unpack GZIPped and singular
+PKZIPped files. To find out whether your ColEm supports this feature, run
+it with -help option and see if there is anything said about GZIP support. 
+
+* When starting ColEm-Unix, I get X_ShmAttach error.
+-----------------------------------------------------------------------------
+  You are probably trying to run ColEm-Unix on a remote Xterminal while it
+attempts to use shared memory for interfacing with X. Use -noshm option to
+tell it not to use shared memory.
+  
+* When starting ColEm-Unix, I get X_PutImage error.
+-----------------------------------------------------------------------------
+  ColEm-Unix version currently needs 8bit, 16bit, or 24bit X. Neither
+2-color nor 16-color Xterminals will work.
+
+* I start ColEm-Unix, but the window stays black.
+-----------------------------------------------------------------------------
+  Some other X application took over all available colors so that the
+emulation could not allocate any for itself. Check if you run XV,
+Netscape, or something similar.
+
+* When compiling emulator under Unix, I get "undefined name" errors.
+-----------------------------------------------------------------------------
+  This means that your linker can not find the libraries necessary for the
+emulator (namely, libX11.a and libXext.a) or some additional libraries
+(like libsocket.a and libnsl.a) are required. Find these libraries in your
+system and modify the Makefile so that the final invocation of the C
+compiler has "-L<path_to_libs>" options. If you have no libXext.a library,
+try #undefining MITSHM option.
+
+
+
+-----------------------------------------------------------------------------
+Marat Fayzullin (fms@cs.umd.edu)

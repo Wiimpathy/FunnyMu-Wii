@@ -1,0 +1,63 @@
+# This is a makefile for the Unix/X version of FunnyMu, the portable
+# Funvision/Whizzard emulator. Following #defines can be customized:
+#             
+# FUNNY     - Should always be present when compiling Funnymu.
+# UNIX      - Should always be present in the Unix version.
+# MSDOS     - Should always be present in the MSDOS version.
+# WINDOWS   - Should always be present in the Windows version.
+# LSB_FIRST - Use this if your CPU has least-significant-byte-first
+#             architecture (Intel 80x86, Alpha, etc.).
+# DEBUG     - Define this option if you have a little runtime
+#             debugger to be compiled into the emulator. It
+#             slows down the emulation though.
+# MITSHM    - Put this if you are going to use MIT Shared Memory
+#             Extensions for XWindows. Using them greatly speeds
+#             up screen updates, although they can't be used on
+#             remote X-terminals. Note that MITSHM can always
+#             be disabled from the command line using -noshm
+#             option.
+# NEWSOUND  - Generator/MAME based Sound
+# LINUX     - Define this if you compile sound support on a Linux 
+#             machine.
+# USESDL    - Use SDL
+#
+# WIN32     - Need this incase you cross compile to Win32 machines. You also
+#             need to remove the -lpthread below
+
+# These are the compiler name, #defines, and the flags used to
+# build Funnymu. Always set flags for the highest possible speed   
+# optimization. For GCC compiler, it will be
+#             
+#        -O3 -fomit-frame-pointer
+#             
+# If you are getting errors about not found X11 header files, 
+# change the -I/usr/X11R6/include to the directory where X11
+# headers are located on your system.
+# If you are getting linker errors about not found X11 functions,
+# change the -L/usr/X11R6/lib to the directory where X11
+# libraries libX11.* and libXext.* are located on your system.  
+CC	= gcc
+DEFINES	= -DFUNNY -DUNIX -DLSB_FIRST -DDEBUG -DLINUX -DUSESDL -DNEWSOUND  -DWIN32
+CFLAGS	= -O2 -I/usr/X11/include -L/usr/X11/lib -I/usr/local/include/SDL ${DEFINES}
+OBJECTS	= funnymu.o funny.o M6502.o Debug.o sn76496.o funnysdl.o
+
+# Make the standard distribution: Funnymu and tools.
+all:	funnymu
+
+# FunnyMu Unix/X requires X11 libraries. See note above if you are
+# experiencing any problems.
+funnymu:	${OBJECTS}
+		${CC} ${CFLAGS} -o $@ ${OBJECTS} -lXext -lX11 -lm -lSDL 
+
+# Clean up.
+clean:
+	rm -f *.o *~
+
+# Dependencies for the object files.
+funnymu.o:	funnymu.c funny.h M6502.h Help.h
+funny.o:	funny.c funny.h M6502.h 
+M6502.o:	M6502.c M6502.h Tables.h Codes.h
+Debug.o:	Debug.c M6502.h
+sn76496.o:      sn76496.c sn76496.h
+funnysdl.o:     funnysdl.c funnysdl.h funny.h
+

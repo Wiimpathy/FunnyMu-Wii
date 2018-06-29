@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+  <name>FunnyMu Wii</name>
+  <coder>Wiimpathy</coder>
+  <version>0.2</version>
+  <release_date>20180622</release_date>
+  <short_description>Funvision/Creativision emulator</short_description> 
+  <long_description>A port of FunnyMu to the Wii. It's a console of the 80's. The games are essentially clones of Atari 2600 with slight differences (different characters for ex.) : Crazy Chicky(Pac-Man), Police Jump(Donkey Kong) etc..</long_description> 
+  <no_ios_reload/>
+</app>
+

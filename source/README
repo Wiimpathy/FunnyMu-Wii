@@ -1,0 +1,163 @@
+FunnyMu
+=======
+
+FunnyMu is an emulator of the Whizzard, Funvision and Creativision 
+computer/games consoles that were sold in the early 1980s. I happened to have
+bought a Funvision. As far as I know the Whizzard and Funvision have identical 
+hardware, just the casing differs. The fundamental hardware is:
+
+  2MHz 6502A CPU
+  9929 Video chip with 16kbytes of RAM
+  76489 Sound chip
+  1Kbyte system RAM
+  6821 PIA keyboard/sound/other interface chip
+
+The fact that it has a 9929 and a 76489 makes it very very similar to a
+Colecovision. The major difference is the CPU.
+
+What I've done is to take Marat Fayzullin's ColEm Colecovision emulator, swap
+in his 6502 emulation core and voila almost a Funvision. My major effort has 
+been to get the keyboard/joysticks and sound to work.
+
+License
+=======
+
+You are not allowed to sell or profit from Funnymu. This also applies to any
+code derived from Funnymu.
+
+Warranty
+========
+
+None. 
+
+
+Code Base
+=========
+
+Most of Funnymu is the source code to ColEm v1.0 and the 6502 Emulation
+Package both by Marat Fayzullin. He is the author of a number of great
+emulators. His web site can be found at http://fms.komkon.org.
+
+Sound is currently from the Generator emulator which in turn took its
+sound from the MAME project.
+
+With the SDL versions a lot of code has been changed and much removed (SDL
+is rather good). 
+
+Status
+======
+ 0.41   29 Nov 2001. Tidied up the SDL code a bit and removed Unix.c and 
+        LibUnix.c that aren't really required any more. Sound still works
+        fine under Linux but varies on Win32. May depend on your sound card.
+ 0.40   28 Nov 2001. Have made an SDL only version. Seems to work well. Have
+        cross compiled to Win32 and wow it works, except that sound is
+        dodgy (NB: sound works perfectly on Linux)
+ 0.32   23 Nov 2001. Tidied up some of the ROM loading routines and
+        added license info to this file.
+ 0.31   Tuned the sound a bit and enabled the RDOP. Now Sound works almost
+        spoton on my P133. Try playing with SCREEN_DELAY in funny.h. Seems OK
+        at 20000 for my P133, but works better if 10000 on my Duron. Have
+        also got the missing keys on the keyboard working.
+ 0.30   First attempt at getting better sound using the sound engine from
+        'Generator' (which is from the MAME project). Seems to go fine on
+        fast machines. Is a little dodgy on my P133 but fine on my Duron.
+ 0.21   Tries to slow it down a lot on fast machines. Remapped most of the
+        keyboard to what it should be. Still don't know how to map '1' and
+        'ENTER'. Chopper Rescue now kinda goes. Sound is still bad.
+ 0.2    Games run. You'll get sound but it'll probably be awful (try running 
+        with ./funnymu -nosound . Parts of the boot rom are missing, so
+        you'll get some text appear as garbage. I'm not sure if the key
+        mappings are very accurate as I don't have a BASIC cartridge
+        handy to check against.
+
+
+
+
+Keys
+====
+
+  ESC         - RESET button. Most games require you to press the
+                RESET button to select a level (often with the fire buttons)
+  Left Shift  - Fire button
+  Tab         - Fire button
+  Ctrl        - Fire button
+  Right Shift - Fire button
+  F12         - Exit
+
+Compiling for Linux
+===================
+
+You need the SDL library. Go to www.libsdl.org, download the latest version
+of SDL. Follow its instructions to install it, then look at the Makefile for 
+FunnyMu. All the default defines should be OK. 
+
+Just type 'make' to compile it.
+
+Compiling for Windows
+=====================
+
+I have only tested this using the Ming cross compiler available from the SDL
+web site. Once you've followed the instructions to install Ming and rebuild 
+SDL for Win32, you should be able to compile a win32 version using:
+
+  make clean
+  cross-make.sh -f Makefile.w32
+
+Now you need to rename 'funnymu' to funnymu.exe' and copy it to a directory
+accessible to your Windows installation.
+
+To run the Windows funnymu, you'll need the SDL.dll. Either download it from 
+the SDL website, or use the one created when you recompiled SDL for cross 
+compilation.
+
+And remember, that sound doesn't seem to work properly in the Win32 version.
+
+Running it
+==========
+
+Just type 
+
+  ./funnymu <cartridge file>
+
+It will load the 'cartridge file' and run it (otherwise it will load the file
+CART.ROM). Remember you probably have to press RESET (ie the Escape key)
+before you can do anything. For example, in Sonic Invaders, you press 
+RESET, then select a level using the fire buttons, then press any key to 
+start a game. Use the left and right arrow keys to steer and left shift
+to fire.
+
+
+Cartridge Image format
+======================
+
+Funnymu expects cartridge dumps to be in a particular format:
+
+ - The first 16K is read into 8000 - BFFF. If the cart file is less than 16k
+   then the cartridge is read into 8000, then replicated to fill up the 16k
+   (eg. a 4k cartridge file is written to 8000 - 8FFF, then replicated at
+   9000-9FFF, A000-AFFF and B000-BFFF).
+ - The next 16k is read into 4000 - 7FFF. If this extra bit is less than 16k,
+   then the data is replicated throughout 4000 - 7FFF.
+
+For example, an 18k cartridge dump has its first 16k read and written into
+memory at 8000-BFFF. The remaining 2K is written into 4000-47FF, then 
+replicated 8 times to appear at 4800, 5000, 5800, 6000, 6800, 7000 and 7800.
+
+Contact
+=======
+
+Before you try to email, please read the FAQ and keep in mind the following
+points:
+
+ - I don't know where any ROMs are.
+
+ - I'm interested in the technical side of emulation and getting things to
+   work. I'm not interested in making the greatest Funvision emulator of all
+   time
+
+ - If you haven't used Linux much before and cannot even compile the program
+   then there are other resources on the net you should read first.
+
+So if you must email me, try cherryripe@bigfoot.com
+
+
